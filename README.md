@@ -87,7 +87,9 @@ python src/carrega_postgres.py
 1. Geração de dataset simulado de e-commerce
 2. Ingestão de dados
 3. Transformação (ETL)
-4. Análise de vendas
+4. Carga dos dados tratados no banco relacional
+<!-- 4. Análise de vendas
 5. Dashboard interativo
 
 **Observação: nessa sprint não inclui as análises e o dashboard.**
+-->

@@ -29,6 +29,16 @@ src
 
 requeriments.txt
 README.md
+
+                   gera_dados.py
+                        ↓
+                ingestao_dados.py
+                        ↓
+                   trata_dados.py
+                        ↓
+               carrega_postgres.py
+                        ↓
+                    PostgreSQL
 ```
 
 ## Pipeline de Dados

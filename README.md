@@ -35,7 +35,7 @@ insightflow-analytics
 
     ├── .gitignore
     ├── requirements.txt
-    ├── README.md
+    └── README.md
 
 
                    gera_dados.py
@@ -52,34 +52,34 @@ insightflow-analytics
 ## Como Rodar
 1. Clonar o repositório:
 ```
-    git clone https://github.com/anapaulalopes93/insightflow-analytics.git
-    cd insightflow-analytics
+git clone https://github.com/anapaulalopes93/insightflow-analytics.git
+cd insightflow-analytics
 ```
 2. Criar e ativar o ambiente virtual:
 ```
-    python3 -m venv .venv
-    source .venv/bin/activate   #Para ativar no Linux/macOS
-    .venv\Scripts\activate      #Para ativar no Windows
+python3 -m venv .venv
+source .venv/bin/activate   # Para ativar no Linux/macOS
+.venv\Scripts\activate      # Para ativar no Windows
 ```
 3. Instalar dependências:
 ```
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 4. Gerar o dataset simulado:
 ```
-    python src/gera_dados.py
+python src/gera_dados.py
 ```
 - O dataset será salvo em data/raw/ecom_data.csv
 
 5. Tratar os dados e padronizar formatos:
 ```
-    python src/trata_dados.py
+python src/trata_dados.py
 ```
 - Os dados tratados serão salvos em data/processed/ecom_data_tratado.csv
 
 6. Carregar os dados tratados no banco de dados:
 ```
-    python src/carrega_postgres.py
+python src/carrega_postgres.py
 ```
 - Os dados serão inseridos em um banco de dados relacional configurado em src/carrega_postgres.py
 

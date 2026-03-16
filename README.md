@@ -83,7 +83,6 @@ python src/carrega_postgres.py
 ```
 - Os dados serão inseridos em um banco de dados relacional configurado em src/carrega_postgres.py
 
-
 ## Pipeline de Dados
 1. Geração de dataset simulado de e-commerce
 2. Ingestão de dados

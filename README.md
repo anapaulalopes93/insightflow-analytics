@@ -14,18 +14,18 @@ Transformar dados brutos de vendas em insights de negócio utilizando Python, ET
 ```
 insightflow-analytics
 
-data
- ├── raw
- │   └── ecom_data.csv
- |
- └── processed
-     └── ecom_data_tratado.csv
+    data
+    ├── raw
+    │   └── ecom_data.csv
+    |
+    └── processed
+        └── ecom_data_tratado.csv
 
-src
- ├── gera_dados.py
- ├── ingestao_dados.py
- ├── trata_dados.py
- └── analise_dados.py
+    src
+    ├── gera_dados.py
+    ├── ingestao_dados.py
+    ├── trata_dados.py
+    └── analise_dados.py
 
 requeriments.txt
 README.md

@@ -26,7 +26,7 @@ Foram realizadas consultas com:
 - Funções de agregação
 - Window Functions (RANK)
 
-Arquivo disponível:
+Arquivo disponível em:
 ```
 sql/queries.sql
 ```

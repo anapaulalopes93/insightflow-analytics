@@ -26,6 +26,11 @@ Foram realizadas consultas com:
 - Funções de agregação
 - Window Functions (RANK)
 
+Arquivo disponível:
+```
+sql/queries.sql
+```
+
 ## Tecnologias utilizadas
 - Python
 - Pandas
@@ -48,6 +53,9 @@ insightflow-analytics
     ├── ingestao_dados.py
     ├── trata_dados.py
     └── carrega_postgres.py
+
+    sql
+    └── queries.sql
 
     ├── .gitignore
     ├── requirements.txt

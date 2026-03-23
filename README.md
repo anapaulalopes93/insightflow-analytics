@@ -18,7 +18,7 @@ Transformar dados brutos de vendas em insights de negócio utilizando Python, ET
 - Identificação de possíveis outliers
 - Correlação entre variáveis
 - Segmentação de clientes (RFM)
-### SQL:
+**SQL**:
 Foram realizadas consultas com:
 - GROUP BY
 - ORDER BY

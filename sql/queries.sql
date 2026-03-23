@@ -1,6 +1,6 @@
 SELECT SUM(Valor_Total) AS faturamento_total FROM vendas;
 
-SELECT Categoria_Produto, SUM(Valor_Total) AS total_vendas FROM vendas GROUP BY Categoria_Produto ORDER BY total DESC;
+SELECT Categoria_Produto, SUM(Valor_Total) AS total_vendas FROM vendas GROUP BY Categoria_Produto ORDER BY total_vendas DESC;
 
 SELECT Nome_Produto, SUM(Quantidade) AS total_vendido FROM vendas GROUP BY Nome_Produto ORDER BY total_vendido DESC;
 

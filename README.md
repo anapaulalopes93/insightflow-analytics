@@ -10,6 +10,21 @@ Transformar dados brutos de vendas em insights de negócio utilizando Python, ET
 - Padronização de formatos (datas, moedas) e
 - Carga dos dados tratados num banco de dados relacional.
 
+**Sprint 2**: Análise Exploratória (EDA) e SQL
+- Estatísticas descritivas
+- Faturamento total
+- Produtos mais vendidos
+- Vendas por categoria
+- Identificação de possíveis outliers
+- Correlação entre variáveis
+- Segmentação de clientes (RFM)
+### SQL:
+Foram realizadas consultas com:
+- GROUP BY
+- ORDER BY
+- Funções de agregação
+- Window Functions (RANK)
+
 ## Tecnologias utilizadas
 - Python
 - Pandas

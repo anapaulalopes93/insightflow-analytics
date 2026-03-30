@@ -4,6 +4,8 @@ Projeto de análise de dados de e-commerce desenvolvido para o desafio de Dados 
 ## Objetivo
 Transformar dados brutos de vendas em insights de negócio utilizando Python, ETL e Visualização Interativa de um dataset simulado.
 
+O projeto utiliza um dataset simulado de e-commerce. Os dados são gerados via script.
+
 **Sprint 1**: Ingestão e ETL (Limpeza de Dados)
 - Geração do dataset simulado (ecom_data.csv) com 5000 linhas ou mais;
 - Tratamento de valores nulos, duplicados e inconsistentes;
@@ -140,8 +142,5 @@ python src/carrega_postgres.py
 2. Ingestão de dados
 3. Transformação (ETL)
 4. Carga dos dados tratados no banco relacional
-<!-- 4. Análise de vendas
-5. Dashboard interativo
-
-**Observação: nessa sprint não inclui as análises e o dashboard.**
--->
+5. Análise de vendas
+6. Dashboard interativo

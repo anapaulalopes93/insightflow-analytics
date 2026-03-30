@@ -31,15 +31,42 @@ Arquivo disponível em:
 sql/queries.sql
 ```
 
+**Sprint 3**: Visualização e Dashboard
+## Funcionalidades:
+- KPIS principais:
+    - Faturamento total
+    - Número de vendas
+    - Produtos vendidos
+    - Ticket médio
+
+- Filtros dinâmicos:
+    - Categoria de produto
+    - Período de vendas
+
+- Visualizações:
+    - Vendas por categoria
+    - Produtos mais vendidos
+    - Série temporal (evolução das vendas)
+
+Como executar o dashboard:
+```
+streamlit run dashboard/dash.py
+```
+
 ## Tecnologias utilizadas
 - Python
 - Pandas
 - PostgreSQL
 - SQLAlchemy
+- Stremlit
+- Plotly
 
 ## Estrutura do Projeto
 ```
 insightflow-analytics
+
+    dashboard
+    └── dash.py
 
     data
     ├── raw

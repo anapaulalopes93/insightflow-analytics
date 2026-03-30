@@ -83,7 +83,7 @@ figura1 = px.bar(cat,
                  title = "Vendas por Categoria")
 col1.plotly_chart(figura1, use_container_width = True)
 
-produt = df.groupby("nome_produto")["quantidade"].sum().reset_index()
+produtos = df.groupby("nome_produto")["quantidade"].sum().reset_index()
 figura2 = px.bar(produtos.sort_values("quantidade", ascending = False),
                  x = "nome_produto",
                  y = "quantidade",

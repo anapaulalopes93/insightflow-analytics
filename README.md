@@ -32,6 +32,7 @@ sql/queries.sql
 ```
 
 **Sprint 3**: Visualização e Dashboard
+
 Funcionalidades:
 - KPIS principais:
     - Faturamento total

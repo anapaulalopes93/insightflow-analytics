@@ -2,19 +2,51 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from sqlalchemy import create_engine
+import os
 
 st.set_page_config(page_title = "InsightFlow Analytics",
                    layout = "wide")
 
+st.markdown(""" <style>
+            body {
+            background-color: #0E1117; }
+
+            .metric-card {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center; }
+            </style> """, unsafe_allow_html = True)
+
 st.title("InsightFlow Analytics")
 st.caption("Dashboard de Vendas de E-commerce")
 
-engine = create_engine("postgresql://postgres:postgres@localhost:5432/insightflow")
-df = pd.read_sql("SELECT * FROM vendas", engine)
-df.columns =df.columns.str.lower()
-df["data_venda"] = pd.to_datetime(df["data_venda"])
+# @st.cache_data
+# def carregar_dados():
+#     engine = create_engine("postgresql://postgres:postgres@localhost:5432/insightflow")
+#     df = pd.read_sql("SELECT * FROM vendas", engine)
+#     df.columns = df.columns.str.lower()
+#     df["data_venda"] = pd.to_datetime(df["data_venda"])
+#     return df
+# df = carregar_dados()
 
-st.sidebar.header("Filtros")
+@st.cache_data
+def carregar_dados():
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        engine = create_engine(db_url)
+        df = pd.read_sql("SELECT * FROM vendas", engine)
+    else:
+        df = pd.read_csv("data/processed/ecom_data_tratado.csv")
+
+    df.columns = df.columns.str.lower()
+    df["data_venda"] = pd.to_datetime(df["data_venda"])
+
+    return df
+
+df = carregar_dados()
+
+st.sidebar.title("Filtros")
 categoria = st.sidebar.multiselect("Categoria",
                                    df["categoria_produto"].unique())
 
@@ -26,11 +58,12 @@ df = df[(df["data_venda"] >= pd.to_datetime(data_inicio)) &
 if categoria:
     df = df[df["categoria_produto"].isin(categoria)]
 
-col1, col2, col3, col4 = st.columns(4)
+
 faturamento = df["valor_total"].sum()
 vendas = df.shape[0]
 produtos = df["quantidade"].sum()
 ticket = faturamento / vendas if vendas > 0 else 0
+col1, col2, col3, col4 = st.columns(4)
 
 col1.metric("Faturamento", f"R$ {faturamento:,.0f}")
 col2.metric("Vendas", vendas)
@@ -46,22 +79,26 @@ figura1 = px.bar(cat,
                  x = "categoria_produto",
                  y = "valor_total",
                  color = "categoria_produto",
+                 template = "plotly_dark",
                  title = "Vendas por Categoria")
 col1.plotly_chart(figura1, use_container_width = True)
 
-produtos = df.groupby("nome_produto")["quantidade"].sum().reset_index()
+produt = df.groupby("nome_produto")["quantidade"].sum().reset_index()
 figura2 = px.bar(produtos.sort_values("quantidade", ascending = False),
                  x = "nome_produto",
                  y = "quantidade",
                  color = "nome_produto",
+                 template = "plotly_dark",
                  title = "Produtos Mais Vendidos")
 col2.plotly_chart(figura2, use_container_width = True)
+
+st.subheader("Evolução das vendas")
 
 vendas_data = df.groupby("data_venda")["valor_total"].sum().reset_index()
 figura_data = px.line(vendas_data,
                       x = "data_venda",
                       y = "valor_total",
-                      title = "Evolução das Vendas ao Longo do Tempo")
+                      template = "plotly_dark")
 st.plotly_chart(figura_data, use_container_width = True)
 
 

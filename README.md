@@ -214,21 +214,21 @@ Temos a última compra, a frequência e o valor gasto dos clientes, permitindo i
 O modelo preditivo é de regressão linear baseada no tempo. Com isso, é esperado saber a tendência de crescimento contínuo e um comportamento previsível, podendo ser aplicadas no planejamento de estoque, na definição de metas e na previsão de receitas.
 
 **Principais Insights**:
-    - O negócio tem alto faturamento e ticket médio elevado
-    - Os Acessórios lideram em volume e receita
-    - Os Eletrônicos agregam valor financeiro
-    - As vendas são estáveis ao longo do tempo
-    - Existe base para previsão confiável
+- O negócio tem alto faturamento e ticket médio elevado;
+- Os Acessórios lideram em volume e receita;
+- Os Eletrônicos agregam valor financeiro;
+- As vendas são estáveis ao longo do tempo;
+- Existe base para previsão confiável.
 
 **Recomendações Estratégicas**:
-    - Explorar os produtos mais vendidos
-    - Investir nas categorias líderes
-    - Usar previsão para planejamento
-    - Aplicar a Segmentação de Clientes (RFM)
+- Explorar os produtos mais vendidos
+- Investir nas categorias líderes
+- Usar previsão para planejamento
+- Aplicar a Segmentação de Clientes (RFM)
 
 O projeto demonstra um pipeline completo de dados com capacidade de:
-    - Gerar dados
-    - Tratar dados e estruturá-los
-    - Extrair insights
-    - Visualizar informações
-    - Prever tendências
+- Gerar dados;
+- Tratar dados e estruturá-los;
+- Extrair insights;
+- Visualizar informações;
+- Prever tendências.

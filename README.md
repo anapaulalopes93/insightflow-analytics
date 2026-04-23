@@ -199,26 +199,33 @@ python src/carrega_postgres.py
     - Oportunidade de crescimento
 4. Móveis: R$7.903.797,07
     - Oportunidade de crescimento assim como os itens da categoria Áudio
+
 **Comportamento das vendas**:
 Pela análise temporal, as vendas distribuídas ao longo de 2023 tem um padrão relativamente estável e sem quedas bruscas, indicando que o negócio é consistente.
+
 **Análise e correlação**:
 Temos uma forte relação entre Quantidade e Valor_Total
 O faturamento é diretamente impulsionado por volume vendido
+
 **Segmentação de clientes**:
 Temos a última compra, a frequência e o valor gasto dos clientes, permitindo identificar clientes VIP, inativos e criar campanhas personalizadas.
+
 **Modelo Preditivo**:
 O modelo preditivo é de regressão linear baseada no tempo. Com isso, é esperado saber a tendência de crescimento contínuo e um comportamento previsível, podendo ser aplicadas no planejamento de estoque, na definição de metas e na previsão de receitas.
+
 **Principais Insights**:
     - O negócio tem alto faturamento e ticket médio elevado;
     - Os Acessórios lideram em volume e receita;
     - Os Eletrônicos agregam valor financeiro;
     - As vendas são estáveis ao longo do tempo;
     - Existe base para previsão confiável.
+
 **Recomendações Estratégicas**:
     - Explorar os produtos mais vendidos
     - Investir nas categorias líderes
     - Usar previsão para planejamento
     - Aplicar a Segmentação de Clientes (RFM)
+    
 O projeto demonstra um pipeline completo de dados com capacidade de:
     - Gerar dados;
     - Tratar dados e estruturá-los;

@@ -1,132 +1,166 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from sqlalchemy import create_engine
-import os
 
 st.set_page_config(page_title = "InsightFlow Analytics",
                    layout = "wide")
 
 st.markdown(""" <style>
-            body {
-            background-color: #0E1117; }
-
-            .metric-card {
-            background-color: #1E1E1E;
+            .stApp{ background-color: #0F172A;}
+            h1, h2, h3 { color: #E2E8F0; }
+            [data-testid = "metric-container"] {
+            background: linear-gradient(135deg, #1E293B, #0F172A);
+            border: 1px solid #334155;
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 10px;
-            text-align: center; }
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3); }
+            section[data-testid="stSidebar"] {
+            background-color: #020617; }
+            label {
+            color: #CBD5F5 !important; }
             </style> """, unsafe_allow_html = True)
 
-st.title("InsightFlow Analytics")
-st.caption("Dashboard de Vendas de E-commerce")
-
-# @st.cache_data
-# def carregar_dados():
-#     engine = create_engine("postgresql://postgres:postgres@localhost:5432/insightflow")
-#     df = pd.read_sql("SELECT * FROM vendas", engine)
-#     df.columns = df.columns.str.lower()
-#     df["data_venda"] = pd.to_datetime(df["data_venda"])
-#     return df
-# df = carregar_dados()
+st.markdown("""# InsightFlow Analytics""")
+st.caption("Plataforma de Inteligência de Vendas")
 
 @st.cache_data
-def carregar_dados():
-    db_url = os.getenv("DATABASE_URL")
-    if db_url:
-        engine = create_engine(db_url)
-        df = pd.read_sql("SELECT * FROM vendas", engine)
-    else:
-        df = pd.read_csv("data/processed/ecom_data_tratado.csv")
-
+def analise_dados():
+    df = pd.read_csv("data/processed/ecom_data_tratado.csv")
     df.columns = df.columns.str.lower()
     df["data_venda"] = pd.to_datetime(df["data_venda"])
-
+    df["data_formatada"] = df["data_venda"].dt.strftime("%d/%m/%Y")
     return df
+df = analise_dados()
 
-df = carregar_dados()
+st.sidebar.header("Filtros")
 
-st.sidebar.title("Filtros")
 categoria = st.sidebar.multiselect("Categoria",
                                    df["categoria_produto"].unique())
 
-data_inicio = st.sidebar.date_input("Data inicial", df["data_venda"].min())
-data_fim = st.sidebar.date_input("Data final", df["data_venda"].max())
+data_inicio = st.sidebar.date_input("Data inicial (dd/mm/aaaa)",
+                                    df["data_venda"].min())
+data_fim = st.sidebar.date_input("Data final (dd/mm/aaaa)",
+                                 df["data_venda"].max())
+st.sidebar.caption("Formato: dia/mês/ano")
 
 df = df[(df["data_venda"] >= pd.to_datetime(data_inicio)) &
         (df["data_venda"] <= pd.to_datetime(data_fim))]
+
 if categoria:
     df = df[df["categoria_produto"].isin(categoria)]
 
+df["mes"] = df["data_venda"].dt.to_period("M")
+df["ano"] = df["data_venda"].dt.year
+st.subheader("Indicadores")
+faturamento_total = df["valor_total"].sum()
 
-faturamento = df["valor_total"].sum()
-vendas = df.shape[0]
-produtos = df["quantidade"].sum()
-ticket = faturamento / vendas if vendas > 0 else 0
 col1, col2, col3, col4 = st.columns(4)
-
-col1.metric("Faturamento", f"R$ {faturamento:,.0f}")
-col2.metric("Vendas", vendas)
-col3.metric("Produtos vendidos", produtos)
-col4.metric("Ticket médio", f"R$ {ticket:,.2f}")
-
+col1.metric("Faturamento", f"R${faturamento_total:,.0f}")
+col2.metric("Vendas", df.shape[0])
+col3.metric("Produtos", int(df["quantidade"].sum()))
+col4.metric("Ticket Médio", f"R${(faturamento_total / df.shape[0]):,.2f}")
 st.divider()
 
+st.subheader("Comparação Ano a Ano")
+faturamento_ano = df.groupby("ano")["valor_total"].sum()
+if len(faturamento_ano) >= 2:
+    ano_atual = faturamento_ano.index.max()
+    ano_anterior = ano_atual - 1
+
+    valor_atual = faturamento_ano.loc[ano_atual]
+    valor_anterior = faturamento_ano.loc[ano_anterior]
+
+    variacao_ano = ((valor_atual - valor_anterior) / valor_anterior) * 100
+
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Ano Atual", f"R${valor_atual:,.0f}")
+    c2.metric("Ano Anterior", f"R${valor_anterior:,.0f}")
+    c3.metric("Variação Ano a Ano", f"{variacao_ano:.2f}%")
+
+vendas_ano = df.groupby(["ano", "mes"])["valor_total"].sum().reset_index()
+vendas_ano["mes"] = vendas_ano["mes"].astype(str)
+fig_ano = px.line(vendas_ano,
+                  x = "mes",
+                  y = "valor_total",
+                  color = "ano",
+                  markers = True)
+fig_ano.update_layout(template = "plotly_dark")
+st.plotly_chart(fig_ano, use_container_width = True)
+st.divider()
+
+st.subheader("Análises")
 col1, col2 = st.columns(2)
 
 cat = df.groupby("categoria_produto")["valor_total"].sum().reset_index()
-figura1 = px.bar(cat,
-                 x = "categoria_produto",
-                 y = "valor_total",
-                 color = "categoria_produto",
-                 template = "plotly_dark",
-                 title = "Vendas por Categoria")
-col1.plotly_chart(figura1, use_container_width = True)
+fig1 = px.bar(cat,
+              x = "categoria_produto",
+              y = "valor_total",
+              color = "categoria_produto",
+              text_auto = True)
+fig1.update_layout(template = "plotly_dark",
+                   plot_bgcolor = "rgba(0, 0, 0, 0)",
+                   paper_bgcolor = "rgba(0, 0, 0, 0)")
+col1.plotly_chart(fig1, use_container_width = True)
 
-produtos = df.groupby("nome_produto")["quantidade"].sum().reset_index()
-figura2 = px.bar(produtos.sort_values("quantidade", ascending = False),
-                 x = "nome_produto",
-                 y = "quantidade",
-                 color = "nome_produto",
-                 template = "plotly_dark",
-                 title = "Produtos Mais Vendidos")
-col2.plotly_chart(figura2, use_container_width = True)
+prod = df.groupby("nome_produto")["quantidade"].sum().reset_index()
+fig2 = px.bar(prod.sort_values("quantidade", ascending = False),
+              x = "nome_produto",
+              y = "quantidade",
+              color = "nome_produto",
+              text_auto = True)
+fig2.update_layout(template = "plotly_dark",
+                   plot_bgcolor = "rgba(0, 0, 0, 0)")
+col2.plotly_chart(fig2, use_container_width = True)
 
-st.subheader("Evolução das vendas")
+st.subheader("Evolução das Vendas")
 
-vendas_data = df.groupby("data_venda")["valor_total"].sum().reset_index()
-figura_data = px.line(vendas_data,
-                      x = "data_venda",
-                      y = "valor_total",
-                      template = "plotly_dark")
-st.plotly_chart(figura_data, use_container_width = True)
+vendas_tempo = df.groupby("data_venda")["valor_total"].sum().reset_index()
+fig3 = px.line(vendas_tempo,
+               x = "data_venda",
+               y = "valor_total",
+               markers = True)
+fig3.update_layout(template = "plotly_dark",
+                   plot_bgcolor = "rgba(0, 0, 0, 0)",
+                   xaxis_tickformat = "%d/%m/%Y")
+st.plotly_chart(fig3, use_container_width = True)
+st.divider()
 
+st.subheader("Ranking Dinâmico")
+col1, col2, col3 = st.columns(3)
+dimensao = col1.selectbox("Dimensao", ["Produto", "Categoria"])
+metrica = col2.selectbox("Métrica", ["Faturamento", "Quantidade"])
+top_n = col3.slider("Exibir quantos itens?", 3, 10, 5)
 
-# if categoria:
-#     df = df[df["categoria_produto"].isin(categoria)]
+if dimensao == "Produto":
+    coluna = "nome_produto"
+else:
+    coluna = "categoria_produto"
 
-# # ------- LINHA DO TEMPO ------
+if metrica == "Faturamento":
+    valor = "valor_total"
+else:
+    valor = "quantidade"
 
-# df = pd.read_csv("data/processed/ecom_data_tratado.csv")
+ranking = (df.groupby(coluna)[valor].sum().reset_index().sort_values(valor, ascending = False).head(top_n))
+fig_rank = px.bar(ranking,
+                  x = coluna,
+                  y = valor,
+                  color = coluna,
+                  text_auto = True)
+fig_rank.update_layout(template = "plotly_dark")
+st.plotly_chart(fig_rank, use_container_width = True)
+st.dataframe(ranking, use_container_width = True)
+if not ranking.empty:
+    top_item = ranking.iloc[0]
+    st.info(f"""Líder: {top_item[coluna]}
+Valor: {top_item[valor]:,.0f}""")
+st.divider()
 
-# faturamento_total = df["Valor_Total"].sum()
-# st.metric("Faturamento Total", f"R${faturamento_total:,.2f}")
+st.subheader("Insights Estratégicos")
+top_categoria = cat.sort_values("valor_total", ascending = False).iloc[0]
+top_produto = prod.sort_values("quantidade", ascending = False).iloc[0]
+st.success(f"Categoria líder de vendas: {top_categoria['categoria_produto']}")
+st.success(f"Produto mais vendido: {top_produto['nome_produto']}")
 
-# categoria = st.selectbox("Filtrar por categoria", ["Todas"] + list(df["Categoria_Produto"].unique()))
-
-# if categoria != "Todas":
-#     df = df[df["Categoria_Produto"] == categoria]
-
-# vendas_categoria = df.groupby("Categoria_Produto")["Valor_Total"].sum().reset_index()
-# figura_categoria = px.bar(vendas_categoria,
-#                           x = "Categoria_Produto",
-#                           y = "Valor_Total",
-#                           title = "Vendas Por Categoria")
-# st.plotly_chart(figura_categoria)
-
-# produtos_vendidos = df.groupby("Nome_Produto")["Quantidade"].sum().reset_index()
-# figura_produtos = px.bar(produtos_vendidos.sort_values("Quantidade", ascending = False),
-#                          x = "Nome_Produto",
-#                          y = "Quantidade",
-#                          title = "Produtos Mais Vendidos")
-# st.plotly_chart(figura_produtos)
+st.markdown("----")
+st.caption("Desenvolvido por Ana Paula Lopes Cruz PDITA174 | Projeto InsightFlow Analytics")

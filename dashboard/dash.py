@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from sklearn.linear_model import LinearRegression
 
 st.set_page_config(page_title = "InsightFlow Analytics",
                    layout = "wide")
@@ -161,6 +162,31 @@ top_categoria = cat.sort_values("valor_total", ascending = False).iloc[0]
 top_produto = prod.sort_values("quantidade", ascending = False).iloc[0]
 st.success(f"Categoria líder de vendas: {top_categoria['categoria_produto']}")
 st.success(f"Produto mais vendido: {top_produto['nome_produto']}")
+
+st.subheader("Previsão de Vendas para os próximos 30 dias")
+df_previsao = df.groupby("data_venda")["valor_total"].sum().reset_index()
+df_previsao["dias"] = (df_previsao["data_venda"] - df_previsao["data_venda"].min()).dt.days
+X = df_previsao[["dias"]]
+Y = df_previsao["valor_total"]
+modelo = LinearRegression()
+modelo.fit(X, Y)
+futuro = pd.DataFrame({"dias": range(df_previsao["dias"].max() + 1, df_previsao["dias"].max() + 31)})
+futuro["valor_total"] = modelo.predict(futuro)
+data_futura = pd.date_range(start = df_previsao["data_venda"].max(),
+                            periods = 30)
+futuro["data_venda"] = data_futura
+df_real = df_previsao[["data_venda", "valor_total"]].copy()
+df_real["tipo"] = "Real"
+futuro["tipo"] = "Previsão"
+df_final = pd.concat([df_real, futuro])
+fig_previsao = px.line(df_final,
+                       x = "data_venda",
+                       y = "valor_total",
+                       color = "tipo",
+                       markers = True)
+fig_previsao.update_layout(template = "plotly_dark",
+                           plot_bgcolor = "rgba(0, 0, 0, 0)")
+st.plotly_chart(fig_previsao, use_container_width = True)
 
 st.markdown("----")
 st.caption("Desenvolvido por Ana Paula Lopes Cruz PDITA174 | Projeto InsightFlow Analytics")

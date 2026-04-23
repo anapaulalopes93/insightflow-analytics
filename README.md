@@ -225,8 +225,9 @@ O modelo preditivo é de regressão linear baseada no tempo. Com isso, é espera
     - Investir nas categorias líderes
     - Usar previsão para planejamento
     - Aplicar a Segmentação de Clientes (RFM)
-    
+
 O projeto demonstra um pipeline completo de dados com capacidade de:
+
     - Gerar dados;
     - Tratar dados e estruturá-los;
     - Extrair insights;
